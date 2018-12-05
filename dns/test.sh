@@ -1,8 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Test for Kubernetes DNS.
 #
 # $1: "canary" or "prod"
+
+#set -x
+#set -e
 
 if [ "$1" != "canary" -a "$1" != "prod" ]; then
     echo "usage: $0 <canary|prod>"
@@ -13,6 +16,7 @@ SERVER_CANARY_K8S=ns-cloud-c1.googledomains.com.
 SERVER_CANARY_KUBERNETES=ns-cloud-b1.googledomains.com.
 SERVER_PROD_K8S=ns-cloud-d1.googledomains.com.
 SERVER_PROD_KUBERNETES=ns-cloud-a1.googledomains.com.
+echo $1
 
 if [ "$1" == "canary" ]; then
     SERVER_K8S="${SERVER_CANARY_K8S}"
@@ -35,6 +39,7 @@ if [ "$R" != 23.236.58.218 ]; then
     exit 2
 fi
 R=$(dig +short -t MX "@${SERVER_K8S}" "${ZONE_PFX}k8s.io")
+echo $R
 if [ "$R" != 23.236.58.218 ]; then
     echo "FAIL: MX ${ZONE_PFX}k8s.io:"
     echo "  got:"
